@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql-kims-note.ctxn9t5j3bfx.ap-northeast-2.rds.amazonaws.com:3306/kimsnote
+    username: kimsnote
+    password: kimsnote
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show_sql: true
+    hibernate:
+      ddl-auto: create
+
+server:
+  port: 48080
+  servlet:
+    context-path: /
+
+jwt:
+  secret-key: a2ltcy1ub3RlLXNwcmluZy1ib290LWp3dC1zZWNyZXQta2V5LWtpbS1taW4tam9vLW5vdGUtcHJvamVjdC1zdWNjZXNzLWdvb2QtcXVhaWxpdHktdmVyeS1nb29kCg==
+  at-expiration: 3600000
+  rt-expiration: 86400000
