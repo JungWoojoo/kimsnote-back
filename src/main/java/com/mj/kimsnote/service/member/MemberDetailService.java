@@ -1,5 +1,7 @@
 package com.mj.kimsnote.service.member;
 
+import com.mj.kimsnote.common.apiException.ApiException;
+import com.mj.kimsnote.common.apiException.ApiExceptionCode;
 import com.mj.kimsnote.entity.member.Member;
 import com.mj.kimsnote.entity.member.enums.Role;
 import com.mj.kimsnote.repository.member.MemberRepository;
@@ -21,7 +23,7 @@ public class MemberDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다. email = " + email));
+                .orElseThrow(() -> new ApiException(ApiExceptionCode.NOT_FOUND_EMAIL));
     }
 
     // 해당하는 User 의 데이터가 존재한다면 UserDetails 객체로 만들어서 return
