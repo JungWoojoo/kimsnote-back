@@ -11,17 +11,18 @@ spring:
     hibernate:
       ddl-auto: create
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
 server:
   port: 48080
   servlet:
     context-path: /
-
 
 jwt:
   secret-key: a2ltcy1ub3RlLXNwcmluZy1ib290LWp3dC1zZWNyZXQta2V5LWtpbS1taW4tam9vLW5vdGUtcHJvamVjdC1zdWNjZXNzLWdvb2QtcXVhaWxpdHktdmVyeS1nb29kCg==
   at-expiration: 3600000
   rt-expiration: 86400000
 
-redis:
-  host: localhost
-  port: 6379
