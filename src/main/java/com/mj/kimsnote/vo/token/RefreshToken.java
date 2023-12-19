@@ -1,6 +1,5 @@
 package com.mj.kimsnote.vo.token;
 
-import com.mj.kimsnote.entity.member.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,8 +16,9 @@ public class RefreshToken {
     private String refreshToken;
 
     @Builder
-    public RefreshToken(String memberId, String refreshToken) {
-        this.memberId = memberId;
+    public RefreshToken(String refreshToken, String memberId) {
         this.refreshToken = refreshToken;
+        this.memberId = memberId;
     }
+
 }
