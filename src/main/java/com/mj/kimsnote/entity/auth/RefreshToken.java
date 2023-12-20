@@ -1,4 +1,4 @@
-package com.mj.kimsnote.vo.token;
+package com.mj.kimsnote.entity.auth;
 
 import lombok.Builder;
 import lombok.Getter;

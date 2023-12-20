@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,18 +29,16 @@ public class Member implements UserDetails {
 
     private String phone;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
-    private Set<Role> roles;
+    private Role role;
 
     @Builder
-    public Member(Long id, String email, String password, String name, String phone, Set<Role> roles) {
+    public Member(Long id, String email, String password, String name, String phone, Role role) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.name = name;
         this.phone = phone;
-        this.roles = roles;
+        this.role = role;
     }
 
     public Member() {
@@ -48,10 +47,7 @@ public class Member implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return List.of(new SimpleGrantedAuthority("user"));
-        return this.roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getValue()))
-                .collect(Collectors.toList());
+        return List.of(new SimpleGrantedAuthority(this.role.getValue()));
     }
 
     @Override
