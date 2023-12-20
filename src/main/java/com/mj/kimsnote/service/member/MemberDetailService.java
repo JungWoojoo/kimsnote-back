@@ -31,7 +31,7 @@ public class MemberDetailService implements UserDetailsService {
         return User.builder()
                 .username(member.getUsername())
                 .password(passwordEncoder.encode(member.getPassword()))
-                .roles(Role.USER.getValue()) // 우선 USER로 고정
+                .roles(member.getRole().getValue()) // 우선 USER로 고정
                 .build();
     }
 }

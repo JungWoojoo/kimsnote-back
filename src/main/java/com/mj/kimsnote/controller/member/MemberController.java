@@ -6,7 +6,7 @@ import com.mj.kimsnote.service.member.read.MemberFindService;
 import com.mj.kimsnote.vo.member.request.JoinRequest;
 import com.mj.kimsnote.vo.member.request.LoginRequest;
 import com.mj.kimsnote.vo.member.response.JoinResponse;
-import com.mj.kimsnote.vo.token.JwtToken;
+import com.mj.kimsnote.vo.auth.JwtToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
