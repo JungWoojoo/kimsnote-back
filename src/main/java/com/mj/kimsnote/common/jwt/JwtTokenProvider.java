@@ -1,10 +1,11 @@
 package com.mj.kimsnote.common.jwt;
 
 import com.mj.kimsnote.entity.member.Member;
-import com.mj.kimsnote.vo.token.JwtToken;
+import com.mj.kimsnote.vo.auth.JwtToken;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,6 +38,7 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
+    // 토큰 생성
     public JwtToken createToken(Authentication authentication) {
         // 권한 가져오기
         String authorities = authentication.getAuthorities().stream()
@@ -63,6 +65,21 @@ public class JwtTokenProvider {
                 .build();
     }
 
+    // 액세스 토큰 재발급
+    public String newAccessToken(Authentication authentication) {
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        Date now = new Date();
+        return  Jwts.builder()
+                .setSubject(authentication.getName())
+                .claim("auth", authorities)
+                .setExpiration(new Date(now.getTime() + atExpirate))
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+    }
+
     // Jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
     public Authentication getAuthentication(String accessToken) {
         // Jwt 토큰 복호화
@@ -79,7 +96,9 @@ public class JwtTokenProvider {
 
         // UserDetails 객체를 만들어서 Authentication return
         // UserDetails: interface, User: UserDetails를 구현한 class
-        UserDetails principal = new Member();
+        UserDetails principal = Member.builder()
+                .email(String.valueOf(claims.get("sub")))
+                .build();
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 

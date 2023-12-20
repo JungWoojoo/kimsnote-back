@@ -2,10 +2,10 @@ package com.mj.kimsnote.service.member.read;
 
 import com.mj.kimsnote.common.jwt.JwtTokenProvider;
 import com.mj.kimsnote.repository.member.MemberRepository;
-import com.mj.kimsnote.repository.token.TokenRepository;
+import com.mj.kimsnote.repository.auth.RedisRepository;
 import com.mj.kimsnote.vo.member.request.LoginRequest;
-import com.mj.kimsnote.vo.token.JwtToken;
-import com.mj.kimsnote.vo.token.RefreshToken;
+import com.mj.kimsnote.vo.auth.JwtToken;
+import com.mj.kimsnote.entity.auth.RefreshToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -20,7 +20,7 @@ public class MemberFindService {
     private final MemberRepository memberRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
-    private final TokenRepository tokenRepository;
+    private final RedisRepository redisRepository;
 
     public JwtToken login(LoginRequest loginRequest){
         UsernamePasswordAuthenticationToken token =
@@ -31,11 +31,11 @@ public class MemberFindService {
         JwtToken jwtToken = jwtTokenProvider.createToken(authentication);
 
         RefreshToken refreshToken = RefreshToken.builder()
-                .memberId(loginRequest.getEmail())
+                .memberId(authentication.getName())
                 .refreshToken(jwtToken.getRefreshToken())
                 .build();
 
-        tokenRepository.save(refreshToken);
+        redisRepository.save(refreshToken);
 
         return jwtToken;
     }

@@ -1,6 +1,7 @@
 package com.mj.kimsnote.service.member.create;
 
 import com.mj.kimsnote.entity.member.Member;
+import com.mj.kimsnote.entity.member.enums.Role;
 import com.mj.kimsnote.repository.member.MemberRepository;
 import com.mj.kimsnote.vo.member.request.JoinRequest;
 import com.mj.kimsnote.vo.member.response.JoinResponse;
@@ -28,6 +29,7 @@ public class MemberAddService {
                 .password(password)
                 .name(joinRequest.getName())
                 .phone(joinRequest.getPhone())
+                .role(Role.USER)
                 .build();
     }
 
