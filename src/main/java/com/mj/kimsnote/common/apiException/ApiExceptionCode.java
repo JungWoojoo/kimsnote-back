@@ -17,6 +17,9 @@ public enum ApiExceptionCode {
     /**
      *   커스텀 Exception
       */
+    // 에러 샘플
+    NOT_FOUND_SAMPLE(HttpStatus.NOT_FOUND, "EX0001", "해당 샘플을 찾을 수 없습니다."),
+
     // 로그인 에러
     NOT_FOUND_EMAIL(HttpStatus.NOT_FOUND, "LE0001", "해당 이메일을 찾을 수 없습니다."),
 
