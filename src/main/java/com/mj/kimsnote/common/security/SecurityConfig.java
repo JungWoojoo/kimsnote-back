@@ -39,7 +39,6 @@ public class SecurityConfig {
                         new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class
                 );
-
 //        http
 //                .formLogin(login ->
 //                        login.loginPage("/login")
