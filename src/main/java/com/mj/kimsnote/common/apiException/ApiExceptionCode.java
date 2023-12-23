@@ -25,7 +25,9 @@ public enum ApiExceptionCode {
 
     // 권한, 토큰 에러
     NOT_FOUND_REFRESH_TOKEN(HttpStatus.NOT_FOUND, "TE0001", "해당 Refresh Token을 찾을 수 없습니다."),
-    INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "TE0002", "Refresh Token이 일치하지 않습니다.")
+    INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "TE0002", "Refresh Token이 일치하지 않습니다."),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "TE003", "유효한 토큰이 아닙니다."),
+    NOT_EXPIRATION_TOKEN(HttpStatus.UNAUTHORIZED, "TE004", "토큰이 만료 되었습니다."),
     ;
 
     private final HttpStatus status;

@@ -1,5 +1,7 @@
 package com.mj.kimsnote.common.jwt;
 
+import com.mj.kimsnote.common.apiException.ApiException;
+import com.mj.kimsnote.common.apiException.ApiExceptionCode;
 import com.mj.kimsnote.entity.member.Member;
 import com.mj.kimsnote.vo.auth.JwtToken;
 import io.jsonwebtoken.*;

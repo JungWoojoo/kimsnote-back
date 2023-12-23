@@ -2,6 +2,8 @@ package com.mj.kimsnote.common.security;
 
 import com.mj.kimsnote.common.jwt.JwtAuthenticationFilter;
 import com.mj.kimsnote.common.jwt.JwtTokenProvider;
+import com.mj.kimsnote.common.security.exception.AccessDeniedExceptionHandler;
+import com.mj.kimsnote.common.security.exception.AuthenticatedExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +40,12 @@ public class SecurityConfig {
                 .addFilterBefore(
                         new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class
+                );
+
+        http
+                .exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(new AuthenticatedExceptionHandler())
+                                .accessDeniedHandler(new AccessDeniedExceptionHandler())
                 );
 //        http
 //                .formLogin(login ->
