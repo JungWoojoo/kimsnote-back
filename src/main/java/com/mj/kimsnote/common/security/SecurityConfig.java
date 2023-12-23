@@ -2,6 +2,8 @@ package com.mj.kimsnote.common.security;
 
 import com.mj.kimsnote.common.jwt.JwtAuthenticationFilter;
 import com.mj.kimsnote.common.jwt.JwtTokenProvider;
+import com.mj.kimsnote.common.security.exception.AccessDeniedExceptionHandler;
+import com.mj.kimsnote.common.security.exception.AuthenticatedExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,8 +32,8 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers("/", "/api/**").permitAll()
-                                .requestMatchers("/user/**").authenticated()
+                        request.requestMatchers("/", "/api/member/**","/error").permitAll()
+                                .requestMatchers("/user/**", "/api/**").authenticated()
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 )
 
@@ -40,6 +42,11 @@ public class SecurityConfig {
                         UsernamePasswordAuthenticationFilter.class
                 );
 
+        http
+                .exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(new AuthenticatedExceptionHandler())
+                                .accessDeniedHandler(new AccessDeniedExceptionHandler())
+                );
 //        http
 //                .formLogin(login ->
 //                        login.loginPage("/login")
