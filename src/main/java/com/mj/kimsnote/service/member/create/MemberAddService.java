@@ -1,10 +1,11 @@
 package com.mj.kimsnote.service.member.create;
 
 import com.mj.kimsnote.entity.member.Member;
+import com.mj.kimsnote.entity.member.enums.Gender;
 import com.mj.kimsnote.entity.member.enums.Role;
 import com.mj.kimsnote.repository.member.MemberRepository;
-import com.mj.kimsnote.vo.member.request.JoinRequest;
-import com.mj.kimsnote.vo.member.response.JoinResponse;
+import com.mj.kimsnote.vo.member.request.JoinMemberRequest;
+import com.mj.kimsnote.vo.member.response.MemberResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,28 +17,25 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberAddService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    public JoinResponse join(JoinRequest joinRequest){
-        String password = passwordEncoder.encode(joinRequest.getPassword());
-        Member member = toEntity(joinRequest, password);
+    public MemberResponse join(JoinMemberRequest joinMemberRequest){
+        String password = passwordEncoder.encode(joinMemberRequest.getPassword());
+        Member member = toEntity(joinMemberRequest, password);
         memberRepository.save(member);
-        return toVo(member);
+        return MemberResponse.toVo(member);
     }
 
-    private static Member toEntity(JoinRequest joinRequest, String password){
+    private static Member toEntity(JoinMemberRequest joinMemberRequest, String password){
         return Member.builder()
-                .email(joinRequest.getEmail())
+                .email(joinMemberRequest.getEmail())
                 .password(password)
-                .name(joinRequest.getName())
-                .phone(joinRequest.getPhone())
+                .name(joinMemberRequest.getName())
+                .birth(joinMemberRequest.getBirth())
+                .phone(joinMemberRequest.getPhone())
+                .gender(joinMemberRequest.getGender())
                 .role(Role.USER)
+                .loginType(joinMemberRequest.getLoginType())
+                .isAgree(joinMemberRequest.isAgree())
                 .build();
     }
 
-    private static JoinResponse toVo(Member member){
-        return JoinResponse.builder()
-                .memberId(member.getId())
-                .email(member.getEmail())
-                .name(member.getName())
-                .build();
-    }
 }

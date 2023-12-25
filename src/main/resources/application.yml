@@ -11,14 +11,36 @@ spring:
     hibernate:
       ddl-auto: update
 
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 192565597393-q71h588cvr1389krljdr8e1ns5sp4f12.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
+  profiles:
+    include: oauth
+
+
 redis:
   host: localhost
   port: 6379
+
 
 server:
   port: 48080
   servlet:
     context-path: /
+    encoding:
+      charset: UTF-8
+
 
 jwt:
   secret-key: a2ltcy1ub3RlLXNwcmluZy1ib290LWp3dC1zZWNyZXQta2V5LWtpbS1taW4tam9vLW5vdGUtcHJvamVjdC1zdWNjZXNzLWdvb2QtcXVhaWxpdHktdmVyeS1nb29kCg==

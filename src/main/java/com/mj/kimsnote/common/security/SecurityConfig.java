@@ -1,9 +1,11 @@
 package com.mj.kimsnote.common.security;
 
+import com.mj.kimsnote.common.config.CorsConfig;
 import com.mj.kimsnote.common.jwt.JwtAuthenticationFilter;
 import com.mj.kimsnote.common.jwt.JwtTokenProvider;
 import com.mj.kimsnote.common.security.exception.AccessDeniedExceptionHandler;
 import com.mj.kimsnote.common.security.exception.AuthenticatedExceptionHandler;
+import com.mj.kimsnote.service.member.read.OAuth2MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +17,12 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @EnableWebSecurity
 @Configuration
@@ -22,6 +30,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final OAuth2MemberService oAuth2MemberService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -47,6 +56,7 @@ public class SecurityConfig {
                         exception.authenticationEntryPoint(new AuthenticatedExceptionHandler())
                                 .accessDeniedHandler(new AccessDeniedExceptionHandler())
                 );
+
 //        http
 //                .formLogin(login ->
 //                        login.loginPage("/login")

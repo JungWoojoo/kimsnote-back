@@ -28,6 +28,7 @@ public enum ApiExceptionCode {
     INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "TE0002", "Refresh Token이 일치하지 않습니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "TE003", "유효한 토큰이 아닙니다."),
     NOT_EXPIRATION_TOKEN(HttpStatus.UNAUTHORIZED, "TE004", "토큰이 만료 되었습니다."),
+    NOT_PRINCIPAL(HttpStatus.UNAUTHORIZED, "TE005", "인증된 사용자 정보가 없습니다."),
     ;
 
     private final HttpStatus status;
