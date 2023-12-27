@@ -54,8 +54,10 @@ public class Member extends BaseEntity {
     public Member() {
     }
 
-    public void update(String name, String email){
+    public Member update(String name, String email){
         this.name = name;
         this.email = email;
+
+        return this;
     }
 }

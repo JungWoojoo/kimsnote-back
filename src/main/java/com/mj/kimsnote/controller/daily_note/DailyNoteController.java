@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/daily-note")
+@RequestMapping("/daily-note")
 public class DailyNoteController {
     private final DailyNoteAddService dailyNoteAddService;
     private final DailyNoteFindService dailyNoteFindService;

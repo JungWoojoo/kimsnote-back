@@ -22,9 +22,8 @@ spring:
           google:
             client-id: 857779627194-qt5drfuvfl8bn9ohggj7t8hequ2h9cqd.apps.googleusercontent.com
             client-secret: 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
-            scope:
-              - email
-              - profile
+            scope: profile, email
+            redirect-uri: http://localhost:48080/api/login/oauth2/code/google
 
 redis:
   host: localhost
@@ -34,7 +33,7 @@ redis:
 server:
   port: 48080
   servlet:
-    context-path: /
+    context-path: /api
     encoding:
       charset: UTF-8
 

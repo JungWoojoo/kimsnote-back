@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/todo")
+@RequestMapping("/todo")
 public class TodoController {
     private final TodoAddService todoAddService;
     private final TodoFindService todoFindService;

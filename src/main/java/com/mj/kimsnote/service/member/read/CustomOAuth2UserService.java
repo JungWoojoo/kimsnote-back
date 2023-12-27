@@ -30,14 +30,18 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuth2User oAuth2User = delegate.loadUser(userRequest); // OAuth 서비스(kakao, google, naver)에서 가져온 유저 정보를 담고있음
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId(); // OAuth 서비스 이름(ex. kakao, naver, google)
-        String userNameAttributeName = userRequest.getClientRegistration()
+
+        String userNameAttributeName = userRequest
+                .getClientRegistration()
                 .getProviderDetails()
                 .getUserInfoEndpoint()
                 .getUserNameAttributeName(); // OAuth 로그인 시 키(pk)가 되는 값
+
         Map<String, Object> attributes = oAuth2User.getAttributes(); // OAuth 서비스의 유저 정보들
 
         MemberProfile memberProfile = OAuthAttributes.extract(registrationId, attributes); // registrationId에 따라 유저 정보를 통해 공통된 UserProfile 객체로 만들어 줌
         memberProfile.setLoginType(LoginType.valueOf(registrationId));
+
         Member member = saveOrUpdate(memberProfile);
 
         Map<String, Object> customAttribute = customAttribute(attributes, userNameAttributeName, memberProfile, registrationId);
@@ -55,15 +59,11 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         customAttribute.put("name", memberProfile.getName());
         customAttribute.put("email", memberProfile.getEmail());
         return customAttribute;
-
     }
 
     private Member saveOrUpdate(MemberProfile memberProfile) {
         Member member = memberRepository.findByEmailAndLoginType(memberProfile.getEmail(), memberProfile.getLoginType())
-                .map(m -> {
-                    m.update(memberProfile.getName(), memberProfile.getEmail());
-                    return m;
-                })
+                .map(m -> m.update(memberProfile.getName(), memberProfile.getEmail()))
                 .orElse(memberProfile.toMember());
         return memberRepository.save(member);
     }
