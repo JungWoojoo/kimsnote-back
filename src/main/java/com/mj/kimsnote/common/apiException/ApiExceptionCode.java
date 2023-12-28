@@ -22,6 +22,7 @@ public enum ApiExceptionCode {
 
     // 로그인 에러
     NOT_FOUND_EMAIL(HttpStatus.NOT_FOUND, "LE0001", "해당 이메일을 찾을 수 없습니다."),
+    UNKNOWN_LOGIN_TYPE(HttpStatus.BAD_REQUEST, "LE0002", "알 수 없는 로그인 형식입니다."),
 
     // 권한, 토큰 에러
     NOT_FOUND_REFRESH_TOKEN(HttpStatus.NOT_FOUND, "TE0001", "해당 Refresh Token을 찾을 수 없습니다."),
