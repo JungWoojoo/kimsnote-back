@@ -1,10 +1,8 @@
 package com.mj.kimsnote.service.member.read;
 
 import com.mj.kimsnote.entity.member.Member;
-import com.mj.kimsnote.entity.member.enums.LoginType;
-import com.mj.kimsnote.entity.member.enums.OAuthAttributes;
 import com.mj.kimsnote.repository.member.MemberRepository;
-import com.mj.kimsnote.vo.member.request.MemberProfile;
+import com.mj.kimsnote.service.member.read.oauth.OAuthAttributes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -16,8 +14,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -37,35 +33,23 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 .getUserInfoEndpoint()
                 .getUserNameAttributeName(); // OAuth 로그인 시 키(pk)가 되는 값
 
-        Map<String, Object> attributes = oAuth2User.getAttributes(); // OAuth 서비스의 유저 정보들
+        OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
-        MemberProfile memberProfile = OAuthAttributes.extract(registrationId, attributes); // registrationId에 따라 유저 정보를 통해 공통된 UserProfile 객체로 만들어 줌
-        memberProfile.setLoginType(LoginType.valueOf(registrationId));
-
-        Member member = saveOrUpdate(memberProfile);
-
-        Map<String, Object> customAttribute = customAttribute(attributes, userNameAttributeName, memberProfile, registrationId);
+        saveOrUpdate(attributes);
 
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority("USER")),
-                customAttribute,
-                userNameAttributeName);
+                attributes.getAttributes(),
+                attributes.getNameAttributeKey()
+        );
+
     }
 
-    private Map<String, Object> customAttribute(Map<String, Object> attributes, String userNameAttributeName, MemberProfile memberProfile, String registrationId) {
-        Map<String, Object> customAttribute = new LinkedHashMap<>();
-        customAttribute.put(userNameAttributeName, attributes.get(userNameAttributeName));
-        customAttribute.put("loginType", registrationId);
-        customAttribute.put("name", memberProfile.getName());
-        customAttribute.put("email", memberProfile.getEmail());
-        return customAttribute;
-    }
-
-    private Member saveOrUpdate(MemberProfile memberProfile) {
-        Member member = memberRepository.findByEmailAndLoginType(memberProfile.getEmail(), memberProfile.getLoginType())
-                .map(m -> m.update(memberProfile.getName(), memberProfile.getEmail()))
-                .orElse(memberProfile.toMember());
-        return memberRepository.save(member);
+    private void saveOrUpdate(OAuthAttributes oAuthAttributes) {
+        Member member = memberRepository.findByEmailAndLoginType(oAuthAttributes.getEmail(), oAuthAttributes.getLoginType())
+                .map(m -> m.update(oAuthAttributes.getName(), oAuthAttributes.getEmail()))
+                .orElse(oAuthAttributes.toEntity());
+        memberRepository.save(member);
     }
 
 }

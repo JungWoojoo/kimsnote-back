@@ -23,10 +23,12 @@ public class OauthService {
     }
 
     public String getToken(String loginType, String code){
+        String result;
         if (loginType.equals("google")) {
-             googleOauth.requestToken(code);
+            result = googleOauth.requestToken(code);
         } else {
             throw new ApiException(UNKNOWN_LOGIN_TYPE);
         }
+        return result;
     }
 }

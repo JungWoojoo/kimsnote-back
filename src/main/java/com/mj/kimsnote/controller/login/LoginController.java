@@ -10,9 +10,12 @@ import com.mj.kimsnote.vo.member.request.LoginMemberRequest;
 import com.mj.kimsnote.vo.member.response.MemberResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/login")
@@ -40,17 +43,14 @@ public class LoginController {
     }
 
     @GetMapping("/oauth2/code/{loginType}")
-    public void getCode(@PathVariable String loginType, @RequestParam String code){
-        String url = oauthService.getToken(loginType, code);
-
-
-
+    public String getCode(@PathVariable String loginType, @RequestParam String code){
+        return oauthService.getToken(loginType, code);
     }
 
-//    @GetMapping("/oauth/loginInfo")
-//    public String oauthLoginInfo(Authentication authentication) {
-//        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-//        Map<String, Object> attributes = oAuth2User.getAttributes();
-//        return attributes.toString();
-//    }
+    @GetMapping("/oauth/loginInfo")
+    public String oauthLoginInfo(Authentication authentication) {
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        Map<String, Object> attributes = oAuth2User.getAttributes();
+        return attributes.toString();
+    }
 }
