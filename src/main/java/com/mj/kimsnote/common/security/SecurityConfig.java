@@ -4,7 +4,6 @@ import com.mj.kimsnote.common.jwt.JwtAuthenticationFilter;
 import com.mj.kimsnote.common.jwt.JwtTokenProvider;
 import com.mj.kimsnote.common.security.exception.AccessDeniedExceptionHandler;
 import com.mj.kimsnote.common.security.exception.AuthenticatedExceptionHandler;
-import com.mj.kimsnote.service.member.read.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +22,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -50,10 +48,12 @@ public class SecurityConfig {
                                 .accessDeniedHandler(new AccessDeniedExceptionHandler())
                 );
 
-        http
-                .oauth2Login(oauth2Login->
-                        oauth2Login.userInfoEndpoint(userInfoEndpointConfig ->
-                                userInfoEndpointConfig.userService(customOAuth2UserService)));
+//        http
+//                .oauth2Login(oauth2Login->
+//                        oauth2Login.userInfoEndpoint(userInfoEndpointConfig ->
+//                                userInfoEndpointConfig.userService(customOAuth2UserService)));
+
+
 //        http
 //                .formLogin(login ->
 //                        login.loginPage("/login")
