@@ -4,6 +4,8 @@ import com.mj.kimsnote.common.jwt.JwtAuthenticationFilter;
 import com.mj.kimsnote.common.jwt.JwtTokenProvider;
 import com.mj.kimsnote.common.security.exception.AccessDeniedExceptionHandler;
 import com.mj.kimsnote.common.security.exception.AuthenticatedExceptionHandler;
+import com.mj.kimsnote.common.security.oauth.OAuth2LoginSuccessHandler;
+import com.mj.kimsnote.service.member.oauth.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +24,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -32,7 +36,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers("/", "/error/**", "/api/login/**").permitAll()
+                        request.requestMatchers("/", "/error/**", "/login/**").permitAll()
                                 .requestMatchers("/member/**","/user/**").hasAnyRole("ADMIN", "USER")
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 )
@@ -48,10 +52,12 @@ public class SecurityConfig {
                                 .accessDeniedHandler(new AccessDeniedExceptionHandler())
                 );
 
-//        http
-//                .oauth2Login(oauth2Login->
-//                        oauth2Login.userInfoEndpoint(userInfoEndpointConfig ->
-//                                userInfoEndpointConfig.userService(customOAuth2UserService)));
+        http
+                .oauth2Login(oauth2Login->
+                        oauth2Login.successHandler(oAuth2LoginSuccessHandler))
+                .oauth2Login(oauth2Login->
+                        oauth2Login.userInfoEndpoint(userInfoEndpointConfig ->
+                                userInfoEndpointConfig.userService(customOAuth2UserService)));
 
 
 //        http
