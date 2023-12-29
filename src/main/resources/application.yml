@@ -11,17 +11,38 @@ spring:
     hibernate:
       ddl-auto: update
 
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 857779627194-qt5drfuvfl8bn9ohggj7t8hequ2h9cqd.apps.googleusercontent.com
+            client-secret: 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
+            scope: profile, email
+            redirect-uri: http://localhost:48080/api/login/oauth2/code/google
+
 redis:
   host: localhost
   port: 6379
 
+
 server:
   port: 48080
   servlet:
-    context-path: /
+    context-path: /api
+    encoding:
+      charset: UTF-8
+
 
 jwt:
   secret-key: a2ltcy1ub3RlLXNwcmluZy1ib290LWp3dC1zZWNyZXQta2V5LWtpbS1taW4tam9vLW5vdGUtcHJvamVjdC1zdWNjZXNzLWdvb2QtcXVhaWxpdHktdmVyeS1nb29kCg==
   at-expiration: 3600000
   rt-expiration: 86400000
 
+
+front:
+  url: http://localhost:3000

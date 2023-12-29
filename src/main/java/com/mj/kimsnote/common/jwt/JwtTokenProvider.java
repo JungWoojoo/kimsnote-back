@@ -3,6 +3,7 @@ package com.mj.kimsnote.common.jwt;
 import com.mj.kimsnote.common.apiException.ApiException;
 import com.mj.kimsnote.common.apiException.ApiExceptionCode;
 import com.mj.kimsnote.entity.member.Member;
+import com.mj.kimsnote.service.member.UserDetailsImpl;
 import com.mj.kimsnote.vo.auth.JwtToken;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -96,12 +97,14 @@ public class JwtTokenProvider {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        // UserDetails 객체를 만들어서 Authentication return
-        // UserDetails: interface, User: UserDetails를 구현한 class
-        UserDetails principal = Member.builder()
-                .email(String.valueOf(claims.get("sub")))
-                .build();
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+
+
+        UserDetailsImpl userDetails = new UserDetailsImpl(
+                Member.builder()
+                        .email(String.valueOf(claims.get("sub")))
+                        .build()
+        );
+        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
     }
 
     // 토큰 정보를 검증하는 메서드

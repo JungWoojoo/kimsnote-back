@@ -1,36 +1,33 @@
 package com.mj.kimsnote.controller.member;
 
+import com.mj.kimsnote.common.apiException.ApiExceptionCode;
+import com.mj.kimsnote.common.apiResponse.ApiExceptionFormat;
 import com.mj.kimsnote.common.apiResponse.ApiResponse;
-import com.mj.kimsnote.service.member.create.MemberAddService;
 import com.mj.kimsnote.service.member.read.MemberFindService;
-import com.mj.kimsnote.vo.member.request.JoinRequest;
-import com.mj.kimsnote.vo.member.request.LoginRequest;
-import com.mj.kimsnote.vo.member.response.JoinResponse;
-import com.mj.kimsnote.vo.auth.JwtToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
+
 @Slf4j
 @RestController
-@RequestMapping("/api/member")
+@RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final MemberAddService memberAddService;
     private final MemberFindService memberFindService;
 
-    @PostMapping("/join")
-    public ApiResponse<JoinResponse> join(@RequestBody JoinRequest joinRequest){
-        JoinResponse response = memberAddService.join(joinRequest);
-        return ApiResponse.success(response);
+    @GetMapping("")
+    public ApiResponse<?> findMember(Principal principal){
+        if(principal != null) {
+            return ApiResponse.success(memberFindService.findMember(principal.getName()));
+        }else {
+            ApiExceptionCode error = ApiExceptionCode.NOT_PRINCIPAL;
+            return ApiResponse.error(new ApiExceptionFormat(error.getStatus(), error.getErrorCode(), error.getErrorMessage()));
+        }
     }
 
-    @PostMapping("/login")
-    public ApiResponse<JwtToken> login(@RequestBody LoginRequest loginRequest){
-        return ApiResponse.success(memberFindService.login(loginRequest));
-    }
 }
