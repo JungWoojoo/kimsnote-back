@@ -52,23 +52,15 @@ public class SecurityConfig {
                                 .accessDeniedHandler(new AccessDeniedExceptionHandler())
                 );
 
-        http
-                .oauth2Login(oauth2Login->
-                        oauth2Login.successHandler(oAuth2LoginSuccessHandler))
-                .oauth2Login(oauth2Login->
-                        oauth2Login.userInfoEndpoint(userInfoEndpointConfig ->
-                                userInfoEndpointConfig.userService(customOAuth2UserService)));
-
-
 //        http
-//                .formLogin(login ->
-//                        login.loginPage("/login")
-//                                .loginProcessingUrl("/login")
-//                                .usernameParameter("email")
-//                                .passwordParameter("password")
-//                                .defaultSuccessUrl("/")
-//                                .permitAll()
-//                ).httpBasic(AbstractHttpConfigurer::disable);
+//                .oauth2Login(oauth2Login->
+//                    oauth2Login.successHandler(oAuth2LoginSuccessHandler))
+//                        .oauth2Login(oauth2Login->
+//                            oauth2Login.userInfoEndpoint(userInfoEndpointConfig ->
+//                                userInfoEndpointConfig.userService(customOAuth2UserService))
+//                        );
+
+
 //        http
 //                .logout(logout ->
 //                        logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
