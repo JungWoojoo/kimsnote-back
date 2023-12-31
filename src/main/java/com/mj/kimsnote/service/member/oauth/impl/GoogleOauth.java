@@ -25,7 +25,7 @@ public class GoogleOauth implements SocialOauth {
 
     @Value("${spring.security.oauth2.client.registration.google.client-secret}")
     private String GOOGLE_CLIENT_SECRET;
-
+//
     @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
     private String GOOGLE_REDIRECT_URL;
 

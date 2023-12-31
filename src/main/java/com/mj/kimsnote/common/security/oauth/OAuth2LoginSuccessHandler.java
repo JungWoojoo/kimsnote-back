@@ -1,17 +1,16 @@
 package com.mj.kimsnote.common.security.oauth;
 
 import com.mj.kimsnote.common.jwt.JwtTokenProvider;
-import com.mj.kimsnote.entity.member.enums.Role;
-import com.mj.kimsnote.repository.member.MemberRepository;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 
@@ -21,10 +20,12 @@ import java.io.IOException;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final MemberRepository memberRepository;
+
+    @Value("${front.url}")
+    private String FRONT_URL;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         log.info("OAuth2 Login 성공!");
         try {
             DefaultOAuth2User oAuth2User = (DefaultOAuth2User) authentication.getPrincipal();
@@ -40,7 +41,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 ////                                .orElseThrow(() -> new IllegalArgumentException("이메일에 해당하는 유저가 없습니다."));
 ////                findUser.authorizeUser();
 //            } else {
-                loginSuccess(response, oAuth2User, authentication); // 로그인에 성공한 경우 access, refresh 토큰 생성
+                loginSuccess(response, authentication); // 로그인에 성공한 경우 access, refresh 토큰 생성
 //            }
         } catch (Exception e) {
             throw e;
@@ -49,10 +50,18 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     }
 
     // TODO : 소셜 로그인 시에도 무조건 토큰 생성하지 말고 JWT 인증 필터처럼 RefreshToken 유/무에 따라 다르게 처리해보기
-    private void loginSuccess(HttpServletResponse response, DefaultOAuth2User oAuth2User, Authentication authentication) throws IOException {
+    private void loginSuccess(HttpServletResponse response, Authentication authentication) throws IOException {
         String accessToken = jwtTokenProvider.createToken(authentication).getAccessToken();
         String refreshToken = jwtTokenProvider.createToken(authentication).getRefreshToken();
         response.addHeader("Authorization", "Bearer " + accessToken);
         response.addHeader("refresh_token", "Bearer " + refreshToken);
+
+        String url = makeRedirectUrl(accessToken);
+        response.sendRedirect(url);
+    }
+
+    private String makeRedirectUrl(String token) {
+        return UriComponentsBuilder.fromUriString(FRONT_URL+"/oauth2/redirect/"+token)
+                .build().toUriString();
     }
 }

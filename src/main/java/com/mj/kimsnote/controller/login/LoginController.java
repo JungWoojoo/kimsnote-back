@@ -33,12 +33,12 @@ public class LoginController {
         return ApiResponse.success(memberFindService.login(loginMemberRequest));
     }
 
-//    @GetMapping("/oauth2/authorization/{loginType}")
-//    public void oauthLogin(@PathVariable String loginType, HttpServletResponse response) throws IOException {
-//        String request = oauthService.request(loginType);
-//        response.sendRedirect(request);
-//    }
-//
+    @GetMapping("/oauth2/authorization/{loginType}")
+    public void oauthLogin(@PathVariable String loginType, HttpServletResponse response) throws IOException {
+        String request = oauthService.request(loginType);
+        response.sendRedirect(request);
+    }
+
     @GetMapping("/oauth2/code/{registrationId}")
     public String getCode(@PathVariable String registrationId, @RequestParam String code){
         return oauthService.getToken(registrationId, code);
