@@ -1,5 +1,6 @@
 package com.mj.kimsnote.controller.login;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mj.kimsnote.common.apiResponse.ApiResponse;
 import com.mj.kimsnote.service.member.create.MemberAddService;
 import com.mj.kimsnote.service.member.oauth.OauthService;
@@ -10,10 +11,12 @@ import com.mj.kimsnote.vo.member.request.LoginMemberRequest;
 import com.mj.kimsnote.vo.member.response.MemberResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
+@Slf4j
 @RestController
 @RequestMapping("/login")
 @RequiredArgsConstructor
@@ -39,9 +42,15 @@ public class LoginController {
         response.sendRedirect(request);
     }
 
+    /**
+     * 1. code 이용해 구글 token 얻어옴
+     * 2. id_token으로 구글 사용자 정보 얻어옴
+     **/
     @GetMapping("/oauth2/code/{registrationId}")
-    public String getCode(@PathVariable String registrationId, @RequestParam String code){
-        return oauthService.getToken(registrationId, code);
+    public String getUserInfo(@PathVariable String registrationId, @RequestParam String code) throws JsonProcessingException {
+        String userInfo = oauthService.getUserInfo(registrationId, code);
+        log.info("userInfo = {}", userInfo);
+        return userInfo;
     }
 
 //    @GetMapping("/oauth/loginInfo")
