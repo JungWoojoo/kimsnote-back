@@ -13,4 +13,6 @@ public interface SocialOauth {
      * @return API 서버로 부터 응답받은 Json 형태의 결과를 string으로 반
      */
     String requestToken(String code);
+
+    String requestUserInfo(String googleAccessToken, String idToken);
 }
