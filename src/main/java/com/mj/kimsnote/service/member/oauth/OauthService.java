@@ -8,6 +8,7 @@ import com.mj.kimsnote.vo.member.oauth.Oauth2TokenVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 import static com.mj.kimsnote.common.apiException.ApiExceptionCode.UNKNOWN_LOGIN_TYPE;
 
 @Service
@@ -37,8 +38,7 @@ public class OauthService {
             String googleAccessToken = oauth2TokenVO.getAccess_token();
             String idToken = oauth2TokenVO.getId_token();
 
-            userInfo = googleOauth.requestUserInfo(googleAccessToken, idToken);
-
+            userInfo = googleOauth.requestUserInfo(googleAccessToken);
         } else {
             throw new ApiException(UNKNOWN_LOGIN_TYPE);
         }

@@ -44,7 +44,7 @@ public class LoginController {
 
     /**
      * 1. code 이용해 구글 token 얻어옴
-     * 2. id_token으로 구글 사용자 정보 얻어옴
+     * 2. token으로 구글 사용자 정보 얻어옴
      **/
     @GetMapping("/oauth2/code/{registrationId}")
     public String getUserInfo(@PathVariable String registrationId, @RequestParam String code) throws JsonProcessingException {

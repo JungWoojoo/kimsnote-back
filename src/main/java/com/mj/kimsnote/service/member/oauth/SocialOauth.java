@@ -14,5 +14,5 @@ public interface SocialOauth {
      */
     String requestToken(String code);
 
-    String requestUserInfo(String googleAccessToken, String idToken);
+    String requestUserInfo(String googleAccessToken);
 }
