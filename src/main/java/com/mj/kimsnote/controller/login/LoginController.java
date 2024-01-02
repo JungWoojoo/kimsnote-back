@@ -36,27 +36,26 @@ public class LoginController {
         return ApiResponse.success(memberFindService.login(loginMemberRequest));
     }
 
+    /** Oauth2 로그인 **/
     @GetMapping("/oauth2/authorization/{loginType}")
-    public void oauthLogin(@PathVariable String loginType, HttpServletResponse response) throws IOException {
+    public void oauthAuthorization(@PathVariable String loginType, HttpServletResponse response) throws IOException {
         String request = oauthService.request(loginType);
         response.sendRedirect(request);
     }
 
     /**
-     * 1. code 이용해 구글 token 얻어옴
-     * 2. id_token으로 구글 사용자 정보 얻어옴
+     * 1. code 이용해 Oauth token 얻어옴
+     * 2. token 으로 구글 사용자 정보 얻어옴
      **/
     @GetMapping("/oauth2/code/{registrationId}")
-    public String getUserInfo(@PathVariable String registrationId, @RequestParam String code) throws JsonProcessingException {
+    public void getUserInfo(@PathVariable String registrationId, @RequestParam String code) throws JsonProcessingException {
         String userInfo = oauthService.getUserInfo(registrationId, code);
         log.info("userInfo = {}", userInfo);
-        return userInfo;
+        oauthLogin(userInfo, registrationId);
     }
 
-//    @GetMapping("/oauth/loginInfo")
-//    public String oauthLoginInfo(Authentication authentication) {
-//        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-//        Map<String, Object> attributes = oAuth2User.getAttributes();
-//        return attributes.toString();
-//    }
+    public ApiResponse<JwtToken> oauthLogin(String userInfo, String registrationId) throws JsonProcessingException {
+        return ApiResponse.success(oauthService.oauthLogin(userInfo, registrationId));
+    }
+
 }

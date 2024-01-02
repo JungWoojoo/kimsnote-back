@@ -70,14 +70,14 @@ public class GoogleOauth implements SocialOauth {
 
     /** id_token 값으로 유저 정보 **/
     @Override
-    public String requestUserInfo(String googleAccessToken, String idToken) {
+    public String requestUserInfo(String googleAccessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + googleAccessToken);
         HttpEntity<String> header = new HttpEntity<>(headers);
 
-        String GOOGLE_ID_TOKEN_URL = "https://oauth2.googleapis.com/tokeninfo?id_token=";
+        String GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v1/userinfo";
         ResponseEntity<String> responseEntity = new RestTemplate().exchange(
-                GOOGLE_ID_TOKEN_URL+idToken,
+                GOOGLE_USERINFO_URL,
                 HttpMethod.GET,
                 header,
                 String.class
