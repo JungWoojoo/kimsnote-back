@@ -3,9 +3,8 @@ package com.mj.kimsnote.vo.member.oauth;
 import com.mj.kimsnote.entity.member.Member;
 import com.mj.kimsnote.entity.member.enums.LoginType;
 import lombok.Getter;
-import lombok.Setter;
 
-@Getter @Setter
+@Getter
 public class MemberProfile {
     private String id;
     private String email;
@@ -15,9 +14,10 @@ public class MemberProfile {
 
     public Member toMember(){
         return Member.builder()
-                .email(email)
-                .name(name)
-                .loginType(loginType)
+                .oauthId(this.id)
+                .email(this.email)
+                .name(this.name)
+                .profileImg(this.picture)
                 .build();
     }
 }

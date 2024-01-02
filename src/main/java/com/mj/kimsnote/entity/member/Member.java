@@ -15,6 +15,8 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
+    private String oauthId;
+
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -35,11 +37,14 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
+    private String profileImg;
+
     private boolean isAgree;
 
     @Builder
-    public Member(Long memberId, String email, String password, String name, String birth, Gender gender, String phone, Role role, LoginType loginType, boolean isAgree) {
+    public Member(Long memberId, String oauthId, String email, String password, String name, String birth, Gender gender, String phone, Role role, LoginType loginType, String profileImg, boolean isAgree) {
         this.memberId = memberId;
+        this.oauthId = oauthId;
         this.email = email;
         this.password = password;
         this.name = name;
@@ -48,16 +53,33 @@ public class Member extends BaseEntity {
         this.phone = phone;
         this.role = role;
         this.loginType = loginType;
+        this.profileImg = profileImg;
         this.isAgree = isAgree;
     }
+
 
     public Member() {
     }
 
-    public Member update(String name, String email){
-        this.name = name;
-        this.email = email;
-
-        return this;
+    public void setRole(){
+        role = Role.USER;
     }
+    public void setLoginType(String registrationId){
+        switch (registrationId) {
+            case "google" -> loginType = LoginType.GOOGLE;
+            case "kakao" -> loginType = LoginType.KAKAO;
+            case "naver" -> loginType = LoginType.NAVER;
+            default -> loginType = LoginType.GENERAL;
+        }
+    }
+    public void setAgree(){
+        isAgree = true;
+    }
+
+//    public Member update(String name, String email){
+//        this.name = name;
+//        this.email = email;
+//
+//        return this;
+//    }
 }
