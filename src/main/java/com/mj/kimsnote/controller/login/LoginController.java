@@ -55,7 +55,9 @@ public class LoginController {
     }
 
     public ApiResponse<JwtToken> oauthLogin(String userInfo, String registrationId) throws JsonProcessingException {
-        return ApiResponse.success(oauthService.oauthLogin(userInfo, registrationId));
+        JwtToken jwtToken = oauthService.oauthLogin(userInfo, registrationId);
+        log.info("jwtToken = {}", jwtToken);
+        return ApiResponse.success(jwtToken);
     }
 
 }

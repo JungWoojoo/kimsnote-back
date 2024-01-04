@@ -23,7 +23,6 @@ public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -56,7 +55,6 @@ public class SecurityConfig {
 //                            oauth2Login.userInfoEndpoint(userInfoEndpointConfig ->
 //                                userInfoEndpointConfig.userService(customOAuth2UserService))
 //                        );
-
 
 //        http
 //                .logout(logout ->
