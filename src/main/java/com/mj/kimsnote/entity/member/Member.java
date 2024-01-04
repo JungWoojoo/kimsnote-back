@@ -61,10 +61,11 @@ public class Member extends BaseEntity {
     public Member() {
     }
 
-    public void setRole(){
+    public void setRole() {
         role = Role.USER;
     }
-    public void setLoginType(String registrationId){
+
+    public void setLoginType(String registrationId) {
         switch (registrationId) {
             case "google" -> loginType = LoginType.GOOGLE;
             case "kakao" -> loginType = LoginType.KAKAO;
@@ -72,14 +73,8 @@ public class Member extends BaseEntity {
             default -> loginType = LoginType.GENERAL;
         }
     }
-    public void setAgree(){
+
+    public void setAgree() {
         isAgree = true;
     }
-
-//    public Member update(String name, String email){
-//        this.name = name;
-//        this.email = email;
-//
-//        return this;
-//    }
 }

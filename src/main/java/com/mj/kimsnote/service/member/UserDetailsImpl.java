@@ -1,6 +1,7 @@
 package com.mj.kimsnote.service.member;
 
 import com.mj.kimsnote.entity.member.Member;
+import com.mj.kimsnote.vo.member.oauth.MemberProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +17,7 @@ import java.util.Map;
 public class UserDetailsImpl  implements UserDetails, OAuth2User {
 
     private final Member member;
-
+    private Map<String, Object> attributes;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -54,10 +56,10 @@ public class UserDetailsImpl  implements UserDetails, OAuth2User {
 
     @Override
     public String getName() {
-        return null;
+        return member.getName();
     }
     @Override
     public Map<String, Object> getAttributes() {
-        return null;
+        return attributes != null ? attributes : Collections.emptyMap();
     }
 }

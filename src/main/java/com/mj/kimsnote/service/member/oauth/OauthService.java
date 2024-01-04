@@ -9,6 +9,7 @@ import com.mj.kimsnote.entity.auth.RefreshToken;
 import com.mj.kimsnote.entity.member.Member;
 import com.mj.kimsnote.repository.auth.RedisRepository;
 import com.mj.kimsnote.repository.member.MemberRepository;
+import com.mj.kimsnote.service.member.UserDetailsImpl;
 import com.mj.kimsnote.service.member.oauth.impl.GoogleOauth;
 import com.mj.kimsnote.vo.auth.JwtToken;
 import com.mj.kimsnote.vo.member.oauth.MemberProfile;
@@ -17,12 +18,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 import static com.mj.kimsnote.common.apiException.ApiExceptionCode.UNKNOWN_LOGIN_TYPE;
@@ -82,34 +88,24 @@ public class OauthService {
         String email = memberProfile.getEmail();
 
         boolean isExistEmail = memberRepository.existsByEmail(email);
-        if(!isExistEmail){
+        Optional<Member> memberOptional = memberRepository.findByEmail(email);
+        Member resultMember = new Member();
+        if(memberOptional.isEmpty()){
             Member member = memberProfile.toMember();
             member.setRole();
             member.setLoginType(registrationId);
             member.setAgree();
             memberRepository.save(member);
+            resultMember = member;
+        } else {
+            resultMember = memberOptional.get();
         }
 
-//        // 변경 시작: OAuth2LoginAuthenticationToken을 사용하도록 수정
-//        OAuth2LoginAuthenticationToken authenticationToken =
-//                new OAuth2LoginAuthenticationToken(
-//                        new DefaultOAuth2User(
-//                                Collections.emptyList(),
-//                                memberProfile.getAttributes(),
-//                                "sub"
-//                        ),
-//                        Collections.emptyList(),
-//                        registrationId
-//                );
-//
-//        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-//        // 변경 끝
-//
-        //todo : 스프링 시큐리티를 사용하면 OAuth2User 인터페이스를 구현할 필요가 있음..
-        UsernamePasswordAuthenticationToken token =
-                new UsernamePasswordAuthenticationToken(email, null);
-
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(token);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                resultMember.getEmail(), // Principal (in this case, email is used as the principal)
+                "N/A", // Credentials (password or any other sensitive information, but not needed here)
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")) // Authorities
+        );
 
         JwtToken jwtToken = jwtTokenProvider.createToken(authentication);
 
