@@ -48,16 +48,9 @@ public class LoginController {
      * 2. token 으로 구글 사용자 정보 얻어옴
      **/
     @GetMapping("/oauth2/code/{registrationId}")
-    public void getUserInfo(@PathVariable String registrationId, @RequestParam String code) throws JsonProcessingException {
+    public ApiResponse<JwtToken> getUserInfo(@PathVariable String registrationId, @RequestParam String code) throws JsonProcessingException {
         String userInfo = oauthService.getUserInfo(registrationId, code);
         log.info("userInfo = {}", userInfo);
-        oauthLogin(userInfo, registrationId);
+        return ApiResponse.success(oauthService.oauthLogin(userInfo, registrationId));
     }
-
-    public ApiResponse<JwtToken> oauthLogin(String userInfo, String registrationId) throws JsonProcessingException {
-        JwtToken jwtToken = oauthService.oauthLogin(userInfo, registrationId);
-        log.info("jwtToken = {}", jwtToken);
-        return ApiResponse.success(jwtToken);
-    }
-
 }

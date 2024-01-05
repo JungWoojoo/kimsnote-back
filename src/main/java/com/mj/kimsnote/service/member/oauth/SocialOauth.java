@@ -1,5 +1,8 @@
 package com.mj.kimsnote.service.member.oauth;
 
+import com.mj.kimsnote.entity.member.Member;
+import com.mj.kimsnote.vo.auth.JwtToken;
+
 public interface SocialOauth {
     /**
      * 각 Social Login 페이지로 Redirect 처리할 URL Build
@@ -15,4 +18,6 @@ public interface SocialOauth {
     String requestToken(String code);
 
     String requestUserInfo(String googleAccessToken);
+
+//    void sendJwtToken(JwtToken jwtToken);
 }
