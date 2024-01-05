@@ -1,7 +1,10 @@
 package com.mj.kimsnote.service.member.oauth.impl;
 
+import com.mj.kimsnote.entity.member.Member;
 import com.mj.kimsnote.service.member.oauth.SocialOauth;
+import com.mj.kimsnote.vo.auth.JwtToken;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -14,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class GoogleOauth implements SocialOauth {
 
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
@@ -24,6 +28,9 @@ public class GoogleOauth implements SocialOauth {
 
     @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
     private String GOOGLE_REDIRECT_URL;
+
+    @Value("${front.url}")
+    private String FRONT_URL;
 
     /** 구글 로그인 후 code값 리다이렉트 **/
     @Override
@@ -81,4 +88,36 @@ public class GoogleOauth implements SocialOauth {
         );
         return responseEntity.getBody();
     }
+
+//    @Override
+//    public void sendJwtToken(JwtToken jwtToken) {
+//        RestTemplate restTemplate = new RestTemplate();
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//        // 프론트 서버로 보낼 데이터 설정
+//        Map<String, Object> requestBody = new HashMap<>();
+//        requestBody.put("jwtToken", jwtToken);
+//
+//        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+//
+//        // 프론트 서버의 콜백 URL에 POST 요청을 보냄
+//        String frontendCallbackUrl = FRONT_URL+"/oauth2/login/callback";
+//        ResponseEntity<String> responseEntity = restTemplate.exchange(
+//                frontendCallbackUrl,
+//                HttpMethod.POST,
+//                requestEntity,
+//                String.class
+//        );
+//
+//        // 프론트 서버로의 요청이 성공했을 경우에 대한 처리
+//        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+//            // 성공적으로 전달되었을 때의 로직
+//            log.info("JWT Token sent successfully!");
+//        } else {
+//            // 전달에 실패한 경우에 대한 로직
+//            log.error("Failed to send JWT Token. Status code: " + responseEntity.getStatusCode());
+//        }
+//    }
 }
