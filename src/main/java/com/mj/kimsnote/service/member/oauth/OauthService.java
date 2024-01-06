@@ -87,9 +87,9 @@ public class OauthService {
         MemberProfile memberProfile = objectMapper.readValue(userInfo, MemberProfile.class);
         String email = memberProfile.getEmail();
 
-        boolean isExistEmail = memberRepository.existsByEmail(email);
+        Member resultMember;
         Optional<Member> memberOptional = memberRepository.findByEmail(email);
-        Member resultMember = new Member();
+
         if(memberOptional.isEmpty()){
             Member member = memberProfile.toMember();
             member.setRole();
@@ -117,5 +117,6 @@ public class OauthService {
         redisRepository.save(refreshToken);
 
         return jwtToken;
+//        googleOauth.sendJwtToken(jwtToken);
     }
 }
