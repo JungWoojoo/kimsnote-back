@@ -104,7 +104,7 @@ public class OauthService {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 resultMember.getEmail(), // Principal (in this case, email is used as the principal)
                 "N/A", // Credentials (password or any other sensitive information, but not needed here)
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")) // Authorities
+                Collections.singletonList(new SimpleGrantedAuthority("USER")) // Authorities
         );
 
         JwtToken jwtToken = jwtTokenProvider.createToken(authentication);
