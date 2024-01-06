@@ -27,10 +27,7 @@ public class GoogleOauth implements SocialOauth {
     private String GOOGLE_CLIENT_SECRET;
 
     @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
-    private String GOOGLE_REDIRECT_URL;
-
-    @Value("${front.url}")
-    private String FRONT_URL;
+    private String REDIRECT_URL;
 
     /** 구글 로그인 후 code값 리다이렉트 **/
     @Override
@@ -39,7 +36,7 @@ public class GoogleOauth implements SocialOauth {
         params.put("scope", "profile email");
         params.put("response_type", "code");
         params.put("client_id", GOOGLE_CLIENT_ID);
-        params.put("redirect_uri", GOOGLE_REDIRECT_URL);
+        params.put("redirect_uri", REDIRECT_URL);
 
         String parameterString = params.entrySet().stream()
                 .map(x -> x.getKey() + "=" + x.getValue())
@@ -58,7 +55,7 @@ public class GoogleOauth implements SocialOauth {
         request.put("code", code);
         request.put("client_id", GOOGLE_CLIENT_ID);
         request.put("client_secret", GOOGLE_CLIENT_SECRET);
-        request.put("redirect_uri", GOOGLE_REDIRECT_URL);
+        request.put("redirect_uri", REDIRECT_URL);
         request.put("grant_type", "authorization_code");
 
         String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
@@ -89,35 +86,4 @@ public class GoogleOauth implements SocialOauth {
         return responseEntity.getBody();
     }
 
-//    @Override
-//    public void sendJwtToken(JwtToken jwtToken) {
-//        RestTemplate restTemplate = new RestTemplate();
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//        // 프론트 서버로 보낼 데이터 설정
-//        Map<String, Object> requestBody = new HashMap<>();
-//        requestBody.put("jwtToken", jwtToken);
-//
-//        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
-//
-//        // 프론트 서버의 콜백 URL에 POST 요청을 보냄
-//        String frontendCallbackUrl = FRONT_URL+"/oauth2/login/callback";
-//        ResponseEntity<String> responseEntity = restTemplate.exchange(
-//                frontendCallbackUrl,
-//                HttpMethod.POST,
-//                requestEntity,
-//                String.class
-//        );
-//
-//        // 프론트 서버로의 요청이 성공했을 경우에 대한 처리
-//        if (responseEntity.getStatusCode() == HttpStatus.OK) {
-//            // 성공적으로 전달되었을 때의 로직
-//            log.info("JWT Token sent successfully!");
-//        } else {
-//            // 전달에 실패한 경우에 대한 로직
-//            log.error("Failed to send JWT Token. Status code: " + responseEntity.getStatusCode());
-//        }
-//    }
 }

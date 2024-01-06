@@ -9,7 +9,6 @@ import com.mj.kimsnote.entity.auth.RefreshToken;
 import com.mj.kimsnote.entity.member.Member;
 import com.mj.kimsnote.repository.auth.RedisRepository;
 import com.mj.kimsnote.repository.member.MemberRepository;
-import com.mj.kimsnote.service.member.UserDetailsImpl;
 import com.mj.kimsnote.service.member.oauth.impl.GoogleOauth;
 import com.mj.kimsnote.vo.auth.JwtToken;
 import com.mj.kimsnote.vo.member.oauth.MemberProfile;
@@ -18,19 +17,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
+import java.net.URLEncoder;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
-import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 import static com.mj.kimsnote.common.apiException.ApiExceptionCode.UNKNOWN_LOGIN_TYPE;
 
 @Service
@@ -57,15 +53,27 @@ public class OauthService {
     /**
      * 1. 구글 토큰 발급
      * 2. 구글 유저 정보 **/
-    public String getUserInfo(String registrationId, String code) throws JsonProcessingException {
-        String userInfo;
+    public String getToken(String registrationId, String code) throws JsonProcessingException {
+        String FRONT_URL;
         if (registrationId.equals("google")) {
             // 1. code이용해 구글 token 얻어오기
-            String token = googleOauth.requestToken(code);
+            String googleToken = googleOauth.requestToken(code);
 
-            // 2. 얻어온 token 중 id_token 안에 유저 정보 가져오기
+            // 2. 프론트 서버에 리다이렉트
+            String token = URLEncoder.encode(googleToken, StandardCharsets.UTF_8);
+            FRONT_URL = "http://localhost:3000/viho/oauth2/redirect/"+registrationId+"/"+token;
+        } else {
+            throw new ApiException(UNKNOWN_LOGIN_TYPE);
+        }
+        return FRONT_URL;
+    }
+
+    public String getUserInfo(String registrationId, String token) throws JsonProcessingException {
+        String userInfo;
+        if (registrationId.equals("google")) {
             ObjectMapper objectMapper = new ObjectMapper();
-            Oauth2TokenVO oauth2TokenVO = objectMapper.readValue(token, Oauth2TokenVO.class);
+            String decodeToken = URLDecoder.decode(token, StandardCharsets.UTF_8);
+            Oauth2TokenVO oauth2TokenVO = objectMapper.readValue(decodeToken, Oauth2TokenVO.class);
             String googleAccessToken = oauth2TokenVO.getAccess_token();
             String idToken = oauth2TokenVO.getId_token();
 
